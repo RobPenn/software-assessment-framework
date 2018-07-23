@@ -1,0 +1,6 @@
+[Core]
+Name = TarbalHelper
+Module = tarball
+
+[Documentation]
+Description = Implements RepositoryHelper methods using for Tarballs
