@@ -1,21 +1,12 @@
-"""
-check file is a tar file
-if it is a tar file, invoke method to extract
-
-method of extraction
-create temp folder directory
-extract tar file to temp directory
-loop through the files in temp for documentation files
-
-"""
+import logging
 import tarfile
 import tempfile
 import config
 
-from plugins.repository.helper import *
+from plugins.repository import helper
 
 
-class TarbalHelper(RepositoryHelper):
+class TarbalHelper(helper.RepositoryHelper):
 
     def __init__(self, file_location=None):
         self.file_location = file_location
