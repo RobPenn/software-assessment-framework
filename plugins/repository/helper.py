@@ -2,7 +2,6 @@ import yapsy.IPlugin
 import logging
 import plugins.repository
 
-
 class RepositoryHelper(yapsy.IPlugin.IPlugin):
     """
     Base class for repository helper plugins
@@ -54,16 +53,18 @@ def find_repository_helper(url):
     :param url: The repository URL
     :return: An implementation of RepositoryHelper
     """
-    logging.info("Finding a repository helper plugin to handle URL:"+url)
+    logging.error("Finding a repository helper plugin to handle URL:"+url)
     repository_helpers = plugins.repository.load()
     for helper in repository_helpers:
+        logging.error(helper.__class__.__name__)
+        #if helper.__class__.__name__ != "RepositoryHelper":
         if helper.can_process(url):
             logging.info(helper.__class__.__name__ + " - can handle that URL")
             return helper
         else:
             logging.debug(helper.__class__.__name__ + " - can't handle that URL")
 
-    logging.warning("Unable to identidy a repository helper")
+    logging.warning("Unable to identify a repository helper")
     return None
 
 # Exceptions
