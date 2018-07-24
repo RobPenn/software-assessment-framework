@@ -3,10 +3,10 @@ import logging
 from github3 import GitHub
 
 import config
-from plugins.repository.helper import *
+from plugins.repository import helper
 
 
-class BitBucketHelper(RepositoryHelper):
+class BitBucketHelper(helper.RepositoryHelper):
 
     def __init__(self, repo_url=None):
         self.repo_url = repo_url
