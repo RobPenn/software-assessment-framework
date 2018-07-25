@@ -1,6 +1,7 @@
 import logging
 import tarfile
 import tempfile
+import os, fnmatch
 import config
 
 from plugins.repository import helper
@@ -13,13 +14,17 @@ class TarbalHelper(helper.RepositoryHelper):
         self.temp_location = None
 
     def can_process(self, url):
+        """
+        :param url: check if URL is actually a tarfile. if it is, extract it to a temporary location
+        :return:
+        """
         self.file_location = url
-        logging.error(self.file_location)
-        if tarfile.is_tarfile(self.file_location):
-            self.temp_location = tempfile.mkdtemp()
-            print(self.temp_location)
+        logging.error(self.file_location) #debug logging tarfile location
+        if tarfile.is_tarfile(self.file_location): #confirm tar file
+            self.temp_location = tempfile.mkdtemp() #create temporary extraction folder
+            print(self.temp_location) #debug print extraction folder location
             tarball = tarfile.open(self.file_location, "r")
-            tarball.extractall(self.temp_location)
+            tarball.extractall(self.temp_location) #extract tar.gz to file extraction location
             return True
         else:
             return False
@@ -37,17 +42,20 @@ class TarbalHelper(helper.RepositoryHelper):
         :param candidate_filenames: A list of the files of interest e.g. ['COPYING','LICENSE']
         :return: A Dictionary of the form {'filename':file_contents,...}
         """
-        found_files = {}
-        # Get all files in the root of the extracted tar file, temp_location
-        root_files = self.temp_location.contents('/')
-        root_files_iter = root_files.items()
-        for name, contents in root_files_iter:
-            for poss_name in candidate_filenames:
-                if poss_name in name.upper():
-                    logging.info("Found a candidate file: " + name)
-                    found_files[name] = self.temp_location.contents(name).decoded.decode('UTF-8')
 
-        return found_files
+        def find(candidate_filenames, path):
+            found_files = {}
+            for root, dirs, files in os.walk(path):
+                for name in files:
+                    for poss_name in candidate_filenames:
+                        if fnmatch.fnmatch(name, poss_name):
+                            found_files[name] = os.path.join(root, name)
+            return found_files
+
+        return find(candidate_filenames, self.temp_location)
+
+
+
 
     def get_commits(self, sha=None, path=None, author=None, number=-1, etag=None, since=None, until=None):
         """
