@@ -63,7 +63,7 @@ class GitHubHelper(helper.RepositoryHelper):
             logging.info("...Success")
         else:
             logging.warning("Unable to connect to selected GitHub repository - check the URL and permissions")
-            raise RepositoryHelperRepoError("Unable to connect to selected GitHub repository - check the URL and permissions. Supply an API token if the repository is private.")
+            raise helper.RepositoryHelperRepoError("Unable to connect to selected GitHub repository - check the URL and permissions. Supply an API token if the repository is private.")
 
     def get_files_from_root(self, candidate_filenames):
         """
